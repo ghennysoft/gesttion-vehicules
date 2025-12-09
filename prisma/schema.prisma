@@ -11,22 +11,52 @@ datasource db {
 }
 
 model Car {
-  id Int @id @default(autoincrement())
-  dateAchat DateTime
-  plaque Int
-  marque String
-  modele String
-  utilisateur String
-  dateAssurance DateTime
-  dateAssuranceProchaine DateTime
-  dateVignette DateTime
-  dateVignetteProchaine DateTime
-  dateVisite DateTime
-  dateVisiteProchaine DateTime
-  dateCarteGrise DateTime
+  id                      String        @id @default(cuid())
+  dateAchat               DateTime
+  plaque                  Int
+  marque                  String
+  modele                  String
+  utilisateur             String
+  dateAssurance           DateTime
+  dateAssuranceProchaine  DateTime
+  dateVignette            DateTime
+  dateVignetteProchaine   DateTime
+  dateVisite              DateTime
+  dateVisiteProchaine     DateTime
+  dateCarteGrise          DateTime
   dateCarteGriseProchaine DateTime
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @default(now())
+  maintenances            Maintenance[]
+  carburants              Carburant[]
+
+  @@map("cars")
+}
+
+model Maintenance {
+  id        String   @id @default(cuid())
+  type      String
+  facture   String
+  montant   String
+  note      String?
+  car       Car      @relation(fields: [carId], references: [id])
+  carId     String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  @@map("cars")
+  @@index(carId)
+}
+
+model Carburant {
+  id        String   @id @default(cuid())
+  type      String
+  litres    String
+  facture   String
+  montant   String
+  car       Car      @relation(fields: [carId], references: [id])
+  carId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index(carId)
 }
