@@ -3,10 +3,17 @@ import Link from "next/link";
 
 export default async function Home() {
   const carsCount = await prisma.car.count();
+  
   const maintenance = await prisma.maintenance.findMany();
   let montantTotal=0;
   maintenance.map(item=>{
     montantTotal += Number(item?.montant);
+  })
+
+  const carburant = await prisma.carburant.findMany();
+  let montantsTotal=0;
+  carburant.map(item=>{
+    montantsTotal += Number(item?.montant);
   })
   return (
     <div className="border border-[#30D5C0] my-24 mx-3 rounded-lg">
@@ -44,12 +51,12 @@ export default async function Home() {
             <div className="card-body text-center p-2">
               <small><b>Total essence</b></small> <br />
               <h3 className="text-4xl p-5">
-                <strong>159000</strong>
+                <strong>{montantsTotal} Fc</strong>
               </h3>
             </div>
             <div className="flex justify-center gap-2">
-              <Link href={'/essences/add'}><span className='border border-blue-400 px-5 py-2 text-blue-400 rounded-lg cursor-pointer'>Ajouter</span></Link>
-              <Link href={'/essences'}><span className='border border-blue-400 px-5 py-2 text-white bg-blue-400 rounded-lg cursor-pointer'>Voir</span></Link>
+              <Link href={'/carburant/add'}><span className='border border-blue-400 px-5 py-2 text-blue-400 rounded-lg cursor-pointer'>Ajouter</span></Link>
+              <Link href={'/carburant'}><span className='border border-blue-400 px-5 py-2 text-white bg-blue-400 rounded-lg cursor-pointer'>Voir</span></Link>
             </div>
           </div>
         </div>

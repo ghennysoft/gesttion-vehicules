@@ -29,7 +29,7 @@ export default function NewCarPage() {
     type: "",
     facture: "",
     montant: "",
-    note: "",
+    litres: "",
   });
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,12 +40,12 @@ export default function NewCarPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-        await fetch("/api/maintenance", {
+        await fetch("/api/carburant", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
         });
-        window.location.href='/maintenance';
+        window.location.href='/carburant';
         setIsLoading(false);
     } catch (error) {
         setIsLoading(false);
@@ -63,13 +63,12 @@ export default function NewCarPage() {
                     <div className="grid grid-cols-1 gap-2 mb-5">
                         <label htmlFor="carId">Véhicule</label>
                         <select 
-                            type="number" 
                             name="carId" 
                             id="carId" 
                             className="border border-gray-500 p-2 rounded-md"  
                             value={form.carId} onChange={handleChange} required
                         >
-                            <option value="" disabled>Selectionnez un vehicule</option>
+                            <option value="" disabled>--- Selectionnez un vehicule ---</option>
                             {
                                 cars?.map(car=>(
                                     <option key={car?.id} value={car?.id}>{car?.marque} {car?.modele}</option>
@@ -78,13 +77,26 @@ export default function NewCarPage() {
                         </select>
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="type">Type d&apos;entretient</label>
-                        <input 
-                            type="text" 
+                        <label htmlFor="type">Type de carburant</label>
+                        <select 
                             name="type" 
                             id="type" 
                             className="border border-gray-500 p-2 rounded-md"  
                             value={form.type} onChange={handleChange} required
+                        >
+                            <option value="" disabled>--- Selectionnez un type ---</option>
+                            <option value="essence">Essence</option>
+                            <option value="mazoute">Mazoute</option>
+                        </select>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2 mb-5">
+                        <label htmlFor="litres">Litres</label>
+                        <input 
+                            type="number" 
+                            name="litres" 
+                            id="litres" 
+                            className="border border-gray-500 p-2 rounded-md"  
+                            value={form.litres} onChange={handleChange} required
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
@@ -105,16 +117,6 @@ export default function NewCarPage() {
                             id="facture" 
                             className="border border-gray-500 p-2 rounded-md"  
                             value={form.facture} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="note">Note</label>
-                        <input 
-                            type="text" 
-                            name="note" 
-                            id="note" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.note} onChange={handleChange}
                         />
                     </div>
                     <div className="text-center">

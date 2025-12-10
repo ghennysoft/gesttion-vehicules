@@ -26,8 +26,8 @@ export default function Page() {
   
   return (
     <>
-      <h3 className='text-blue-400 text-center p-2 mt-5' style={{fontSize: '1.7rem', fontWeight: 600}}>Tous les entretiens</h3>
-      <div className="flex justify-center gap-3">
+      <h3 className='text-blue-400 text-center p-2 mt-5' style={{fontSize: '1.7rem', fontWeight: 600}}>Depenses entretiens</h3>
+      <div className="flex justify-center gap-3 my-5">
         <Link href={'/maintenance/add'} className="border border-blue-400 bg-blue-400 text-white rounded-md px-3 py-1">Ajouter</Link>
         <Link href={'/'} className="border border-blue-400 text-blue-400 rounded-md px-3 py-1">Retourner à l&apos;accueil</Link>
       </div>
