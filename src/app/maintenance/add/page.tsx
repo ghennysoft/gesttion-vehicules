@@ -1,19 +1,37 @@
 "use client";
 
+import { getCars } from "../../../app/api/cars/route";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function NewCarPage() {
+
+  const [cars, setCars] = useState(null);
+  const [dataLoading, setDataLoading] = useState(false); 
+    useEffect(() => {
+        const getData = async () => {
+            setDataLoading(true);
+            try {
+                const res = await getCars()
+                setCars(res)
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setDataLoading(false);              
+            }            
+        }
+        getData();
+    }, [])
+
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
-    car: "",
     carId: "",
     type: "",
     facture: "",
     montant: "",
     note: "",
   });
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -22,18 +40,20 @@ export default function NewCarPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-        await fetch("/api/cars", {
+        await fetch("/api/maintenance", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
         });
-        window.location.href='/maintenance';
         setIsLoading(false);
+        window.location.href='/maintenance';
     } catch (error) {
         setIsLoading(false);
         console.log(error);
     }
   };
+
+  if(dataLoading) return <p>Chargement...</p>
 
   return (
         <div className="border border-[#30D5C0] my-24 mx-3 rounded-lg">
@@ -41,133 +61,60 @@ export default function NewCarPage() {
                 <h3 className='text-blue-400 text-center' style={{fontSize: '2rem'}}><b>Nouvel enregistrement</b></h3>
                 <form onSubmit={handleSubmit} className="border border-gray-500 rounded-md p-6 my-6 md:w-100 mx-auto">
                     <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateAchat">Date achat</label>
-                        <input 
-                            type="date" 
-                            name="dateAchat" 
-                            id="dateAchat" 
-                            className="border border-gray-500 p-2 rounded-md" 
-                            value={form.dateAchat} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="plaque">Plaque</label>
-                        <input 
+                        <label htmlFor="carId">Véhicule</label>
+                        <select 
                             type="number" 
-                            name="plaque" 
-                            id="plaque" 
+                            name="carId" 
+                            id="carId" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.plaque} onChange={handleChange} required
-                        />
+                            value={form.carId} onChange={handleChange} required
+                        >
+                            <option value="" disabled>Selectionnez un vehicule</option>
+                            {
+                                cars?.map(car=>(
+                                    <option key={car?.id} value={car?.id}>{car?.marque} {car?.modele}</option>
+                                ))
+                            }
+                        </select>
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="marque">Marque</label>
+                        <label htmlFor="type">Type d&apos;entretient</label>
                         <input 
                             type="text" 
-                            name="marque" 
-                            id="marque" 
+                            name="type" 
+                            id="type" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.marque} onChange={handleChange} required
+                            value={form.type} onChange={handleChange} required
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="modele">Modele</label>
+                        <label htmlFor="montant">Montant (Fc)</label>
                         <input 
                             type="text" 
-                            name="modele" 
-                            id="modele" 
+                            name="montant" 
+                            id="montant" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.modele} onChange={handleChange} required
+                            value={form.montant} onChange={handleChange} required
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="utilisateur">Utilisateur</label>
+                        <label htmlFor="facture">Facture</label>
                         <input 
                             type="text" 
-                            name="utilisateur" 
-                            id="utilisateur" 
+                            name="facture" 
+                            id="facture" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.utilisateur} onChange={handleChange} required
+                            value={form.facture} onChange={handleChange} required
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateAssurance">Date assurance</label>
+                        <label htmlFor="note">Note</label>
                         <input 
-                            type="date" 
-                            name="dateAssurance" 
-                            id="dateAssurance" 
+                            type="text" 
+                            name="note" 
+                            id="note" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateAssurance} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateAssuranceProchaine">Date assurance prochaine</label>
-                        <input 
-                            type="date" 
-                            name="dateAssuranceProchaine" 
-                            id="dateAssuranceProchaine" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateAssuranceProchaine} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateVignette">Date vignette</label>
-                        <input 
-                            type="date" 
-                            name="dateVignette" 
-                            id="dateVignette" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateVignette} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateVignetteProchaine">Date vignette prochaine</label>
-                        <input 
-                            type="date" 
-                            name="dateVignetteProchaine" 
-                            id="dateVignetteProchaine" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateVignetteProchaine} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateVisite">Date visite</label>
-                        <input 
-                            type="date" 
-                            name="dateVisite" 
-                            id="dateVisite" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateVisite} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateVisiteProchaine">Date visite prochaine</label>
-                        <input 
-                            type="date" 
-                            name="dateVisiteProchaine" 
-                            id="dateVisiteProchaine" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateVisiteProchaine} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateCarteGrise">Date carte grise</label>
-                        <input 
-                            type="date" 
-                            name="dateCarteGrise" 
-                            id="dateCarteGrise" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateCarteGrise} onChange={handleChange} required
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 gap-2 mb-5">
-                        <label htmlFor="dateCarteGriseProchaine">Date carte grise prochaine</label>
-                        <input 
-                            type="date" 
-                            name="dateCarteGriseProchaine" 
-                            id="dateCarteGriseProchaine" 
-                            className="border border-gray-500 p-2 rounded-md"  
-                            value={form.dateCarteGriseProchaine} onChange={handleChange} required
+                            value={form.note} onChange={handleChange}
                         />
                     </div>
                     <div className="text-center">

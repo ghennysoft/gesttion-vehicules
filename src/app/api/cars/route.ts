@@ -1,17 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+"use server"
 
-// export async function GET() {
-//     return NextResponse.json({
-//         ok: true,
-//         env: process.env.NODE_ENV,
-//     });
-// }
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "../../../lib/prisma";
+import { revalidatePath } from "next/cache";
+
+export async function getCars() {
+  return await prisma.car.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const car = await prisma.car.create({
+    // const car = await prisma.car.create({
+    await prisma.car.create({
       data: {
         dateAchat: new Date(body.dateAchat),
         plaque: Number(body.plaque),
@@ -28,9 +31,10 @@ export async function POST(request: NextRequest) {
         dateCarteGriseProchaine: new Date(body.dateCarteGriseProchaine),
       },
     });
-    return NextResponse.json(car);
+    revalidatePath("/cars")
+    // return NextResponse.json(car);
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     return NextResponse.json({ error: "Erreur lors de la création" }, { status: 500 });
   }
 }

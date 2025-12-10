@@ -1,10 +1,28 @@
-import prisma from "@/lib/prisma";
-import Link from "next/link";
+"use client"
 
-export default async function Page() {
-  const cars = await prisma.car.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getCars } from "../api/cars/route";
+
+export default function Page() {
+  const [cars, setCars] = useState(null);
+  const [dataLoading, setDataLoading] = useState(false); 
+  useEffect(() => {
+    const getData = async () => {
+      setDataLoading(true);
+      try {
+        const res = await getCars()
+        setCars(res)
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setDataLoading(false);              
+      }            
+    }
+    getData();
+  }, [])
+
+  if(dataLoading) return <p>Loading...</p>
   
   return (
     <>
@@ -31,7 +49,7 @@ export default async function Page() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {
-                cars.map(car=>(
+                cars?.map(car=>(
                   <tr key={car?.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{car?.marque}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{car?.modele}</td>
