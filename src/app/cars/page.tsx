@@ -4,8 +4,25 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getCars } from "../api/cars/route";
 
+interface Car {
+  id: string,
+  dateAchat: Date,
+  plaque: number,
+  marque: string,
+  modele:string,
+  utilisateur: string,
+  dateAssurance: Date,
+  dateAssuranceProchaine: Date,
+  dateVignette: Date,
+  dateVignetteProchaine: Date,
+  dateVisite: Date,
+  dateVisiteProchaine: Date,
+  dateCarteGrise: Date,
+  dateCarteGriseProchaine: Date,
+}
+
 export default function Page() {
-  const [cars, setCars] = useState(null);
+  const [cars, setCars] = useState<Car[]>([]);
   const [dataLoading, setDataLoading] = useState(false); 
   useEffect(() => {
     const getData = async () => {

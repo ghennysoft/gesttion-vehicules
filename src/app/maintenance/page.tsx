@@ -4,8 +4,27 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getMaintenances } from "../api/maintenance/route";
 
+interface Car {
+  id: string,
+  dateAchat: Date,
+  plaque: number,
+  marque: string,
+  modele:string,
+  utilisateur: string,
+}
+
+interface Maintenance {
+  id: string,
+  car: Car,
+  type: string,
+  facture: string,
+  montant: string,
+  note: string | null,
+  createdAt: Date,
+}
+
 export default function Page() {
-  const [maintenances, setMaintenances] = useState(null);  
+  const [maintenances, setMaintenances] = useState<Maintenance[]>([]);  
   const [isLoading, setIsLoading] = useState(false); 
   useEffect(() => {
     const getData = async () => {

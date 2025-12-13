@@ -4,8 +4,27 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCarburants } from "../api/carburant/route";
 
+interface Car {
+  id: string,
+  dateAchat: Date,
+  plaque: number,
+  marque: string,
+  modele:string,
+  utilisateur: string,
+}
+
+interface Carburant {
+  id: string,
+  car: Car,
+  type: string,
+  litres: string,
+  montant: string,
+  facture: string,
+  createdAt: Date,
+}
+
 export default function Page() {
-  const [carburant, setCarburant] = useState(null);  
+  const [carburant, setCarburant] = useState<Carburant[]>([]);  
   const [isLoading, setIsLoading] = useState(false); 
   useEffect(() => {
     const getData = async () => {
