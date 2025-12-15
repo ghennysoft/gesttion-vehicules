@@ -4,9 +4,16 @@ import { getCars } from "../../../app/api/cars/route";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function NewCarPage() {
+interface Car {
+  id: string,
+  dateAchat: Date,
+  plaque: number,
+  marque: string,
+  modele:string,
+}
 
-  const [cars, setCars] = useState(null);
+export default function NewCarPage() {
+  const [cars, setCars] = useState<Car[]>([]);
   const [dataLoading, setDataLoading] = useState(false); 
     useEffect(() => {
         const getData = async () => {
@@ -31,10 +38,6 @@ export default function NewCarPage() {
     montant: "",
     litres: "",
   });
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +69,7 @@ export default function NewCarPage() {
                             name="carId" 
                             id="carId" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.carId} onChange={handleChange} required
+                            value={form.carId} onChange={(e)=>setForm({...form, carId: e.target.value})} required
                         >
                             <option value="" disabled>--- Selectionnez un vehicule ---</option>
                             {
@@ -82,7 +85,7 @@ export default function NewCarPage() {
                             name="type" 
                             id="type" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.type} onChange={handleChange} required
+                            value={form.type} onChange={(e)=>setForm({...form, type: e.target.value})} required
                         >
                             <option value="" disabled>--- Selectionnez un type ---</option>
                             <option value="essence">Essence</option>
@@ -96,7 +99,7 @@ export default function NewCarPage() {
                             name="litres" 
                             id="litres" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.litres} onChange={handleChange} required
+                            value={form.litres} onChange={(e)=>setForm({...form, litres: e.target.value})} required
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
@@ -106,7 +109,7 @@ export default function NewCarPage() {
                             name="montant" 
                             id="montant" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.montant} onChange={handleChange} required
+                            value={form.montant} onChange={(e)=>setForm({...form, montant: e.target.value})} required
                         />
                     </div>
                     <div className="grid grid-cols-1 gap-2 mb-5">
@@ -116,7 +119,7 @@ export default function NewCarPage() {
                             name="facture" 
                             id="facture" 
                             className="border border-gray-500 p-2 rounded-md"  
-                            value={form.facture} onChange={handleChange} required
+                            value={form.facture} onChange={(e)=>setForm({...form, facture: e.target.value})} required
                         />
                     </div>
                     <div className="text-center">
